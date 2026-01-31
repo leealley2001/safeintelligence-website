@@ -328,8 +328,17 @@
     .skip-btn{width:100%;padding:12px;background:transparent;border:2px solid var(--si-light-gray);border-radius:10px;color:var(--si-warm-gray);font-size:14px;cursor:pointer}
     .skip-btn:hover{border-color:var(--si-warm-gray)}
   </style>
-
-  <script>
+<script>
     let selectedType='subscription';let selectedAmount=18;
     function showDonationModal(){document.getElementById('donation-modal').classList.add('visible');document.body.style.overflow='hidden'}
-    function closeDonationModal(){document.getElementById('donation-modal').classList.remove('visible')
+    function closeDonationModal(){document.getElementById('donation-modal').classList.remove('visible');document.body.style.overflow=''}
+    function selectSubscription(){selectedType='subscription';selectedAmount=18;document.querySelector('.subscription-option').classList.add('selected');document.querySelectorAll('.amount-btn').forEach(b=>b.classList.remove('selected'));document.getElementById('custom-amount-wrapper').classList.remove('visible');const btn=document.getElementById('donate-btn');btn.textContent='Subscribe — $18/month';btn.classList.remove('onetime')}
+    document.querySelectorAll('.amount-btn').forEach(btn=>{btn.addEventListener('click',function(){selectedType='onetime';document.querySelector('.subscription-option').classList.remove('selected');document.querySelectorAll('.amount-btn').forEach(b=>b.classList.remove('selected'));this.classList.add('selected');const amount=this.dataset.amount;const donateBtn=document.getElementById('donate-btn');if(amount==='custom'){document.getElementById('custom-amount-wrapper').classList.add('visible');document.getElementById('custom-amount').focus();selectedAmount=null}else{document.getElementById('custom-amount-wrapper').classList.remove('visible');selectedAmount=parseInt(amount);donateBtn.textContent='Give $'+selectedAmount;donateBtn.classList.add('onetime')}})});
+    document.getElementById('custom-amount').addEventListener('input',function(){const val=parseFloat(this.value);selectedAmount=val>0?val:null;const btn=document.getElementById('donate-btn');if(selectedAmount){btn.textContent='Give $'+selectedAmount;btn.classList.add('onetime')}});
+    async function processPayment(){if(!selectedAmount)return;const btn=document.getElementById('donate-btn');btn.disabled=true;btn.textContent='Processing...';try{const endpoint=selectedType==='subscription'?'/api/create-subscription-session':'/api/create-donation-session';const body=selectedType==='subscription'?{}:{amount:selectedAmount};const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await response.json();if(data.url){window.location.href=data.url}else{throw new Error(data.error||'Failed')}}catch(error){console.error('Payment error:',error);alert('Something went wrong. Please try again.');btn.disabled=false;btn.textContent=selectedType==='subscription'?'Subscribe — $18/month':'Give $'+selectedAmount}}
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDonationModal()});
+    document.getElementById('donation-modal').addEventListener('click',function(e){if(e.target===this)closeDonationModal()});
+  </script>
+
+</body>
+</html>
