@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You | SI — Safe Intelligence</title>
+  <meta name="description" content="Thank you for supporting Safe Intelligence.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --si-cream: #F5F0E8;
+      --si-warm-white: #FDFBF7;
+      --si-terracotta: #C75D3A;
+      --si-forest: #2D4A3E;
+      --si-gold: #D4A84B;
+      --si-charcoal: #1C1C1C;
+      --si-warm-gray: #6B6560;
+    }
+    
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--si-cream);
+      color: var(--si-charcoal);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 600px;
+    }
+    
+    .icon {
+      font-size: 80px;
+      margin-bottom: 24px;
+    }
+    
+    h1 {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 42px;
+      color: var(--si-charcoal);
+      margin-bottom: 16px;
+    }
+    
+    .highlight {
+      color: var(--si-terracotta);
+    }
+    
+    p {
+      font-size: 18px;
+      color: var(--si-warm-gray);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background: var(--si-forest);
+      color: white;
+      padding: 16px 32px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.02em;
+      transition: all 0.2s ease;
+    }
+    
+    .btn:hover {
+      background: #3D6452;
+      transform: translateY(-2px);
+    }
+    
+    .footer-note {
+      margin-top: 48px;
+      font-size: 14px;
+      color: var(--si-warm-gray);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🛡️</div>
+    <h1>Thank <span class="highlight">You</span></h1>
+    <p>
+      Thank you for supporting Safe Intelligence. You're helping keep AI in the hands of the people — not corporations.
+    </p>
+    <a href="/" class="btn">Return to SI</a>
+    <p class="footer-note">
+      A receipt has been sent to your email by Stripe.
+    </p>
+  </div>
+</body>
+</html>
