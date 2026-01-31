@@ -2,6 +2,7 @@
   "name": "safeintelligence-website",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "stripe": "^14.10.0"
   }
