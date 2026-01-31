@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SI — The People's Intelligence</title>
+  <meta name="description" content="SI is Safe Intelligence: private, open-source intelligence without data harvesting. Your conversations are not mined. Your ideas are not resold.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+  
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --si-cream: #F5F0E8;
+      --si-warm-white: #FDFBF7;
+      --si-terracotta: #C75D3A;
+      --si-terracotta-dark: #A84D2E;
+      --si-forest: #2D4A3E;
+      --si-forest-light: #3D6452;
+      --si-gold: #D4A84B;
+      --si-gold-light: #E8C36A;
+      --si-charcoal: #1C1C1C;
+      --si-warm-gray: #6B6560;
+      --si-light-gray: #E8E4DC;
+      --si-safety-green: #3A8A5C;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--si-cream);
+      color: var(--si-charcoal);
+      line-height: 1.6;
+    }
+
+    /* Texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ═══════════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--si-charcoal);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      border-bottom: 3px solid var(--si-terracotta);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-logo svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .nav-logo-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-brand {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 20px;
+      color: var(--si-warm-white);
+      line-height: 1;
+    }
+
+    .nav-tagline {
+      font-size: 10px;
+      color: var(--si-gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-link {
+      color: var(--si-cream);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.8;
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-link:hover {
+      opacity: 1;
+    }
+
+    .nav-cta {
+      background: var(--si-terracotta);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      transition: all 0.2s ease;
+    }
+
+    .nav-cta:hover {
+      background: var(--si-terracotta-dark);
+      transform: translateY(-2px);
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO SECTION
+    ═══════════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 120px 32px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg-shape {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(199, 93, 58, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      top: -200px;
+      right: -200px;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-logo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 24px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--si-charcoal);
+      padding: 10px 20px;
+      border-radius: 30px;
+      margin-bottom: 32px;
+    }
+
+    .hero-badge-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--si-safety-green);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(58, 138, 92, 0.4); }
+      50% { opacity: 0.8; box-shadow: 0 0 0 8px rgba(58, 138, 92, 0); }
+    }
+
+    .hero-badge-text {
+      font-size: 12px;
+      color: var(--si-cream);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .hero-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(36px, 6vw, 64px);
+      color: var(--si-charcoal);
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .hero-title .highlight {
+      color: var(--si-terracotta);
+    }
+
+    .hero-subtitle {
+      font-size: clamp(18px, 2.5vw, 22px);
+      color: var(--si-warm-gray);
+      max-width: 600px;
+      margin: 0 auto 40px;
+      line-height: 1.6;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--si-terracotta);
+      color: white;
+      padding: 18px 36px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: var(--si-terracotta-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(199, 93, 58, 0.25);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--si-charcoal);
+      padding: 18px 36px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.02em;
+      border: 2px solid var(--si-light-gray);
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--si-charcoal);
+      background: var(--si-charcoal);
+      color: white;
+    }
+
+    /* ═══════════════════════════════════════════
+       MANIFESTO SECTION
+    ═══════════════════════════════════════════ */
+    .manifesto {
+      background: var(--si-charcoal);
+      padding: 100px 32px;
+      position: relative;
+    }
+
+    .manifesto-content {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .manifesto-label {
+      font-size: 12px;
+      color: var(--si-gold);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+
+    .manifesto-text {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(24px, 4vw, 36px);
+      color: var(--si-warm-white);
+      line-height: 1.4;
+      margin-bottom: 32px;
+    }
+
+    .manifesto-text .em {
+      color: var(--si-terracotta);
+    }
+
+    .manifesto-subtext {
+      font-size: 16px;
+      color: var(--si-warm-gray);
+      line-height: 1.7;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ═══════════════════════════════════════════
+       DIFFERENCE SECTION
+    ═══════════════════════════════════════════ */
+    .difference {
+      padding: 100px 32px;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 64px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      color: var(--si-terracotta);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(28px, 4vw, 42px);
+      color: var(--si-charcoal);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      font-size: 17px;
+      color: var(--si-warm-gray);
+      line-height: 1.6;
+    }
+
+    .difference-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .difference-card {
+      background: var(--si-warm-white);
+      border: 2px solid var(--si-light-gray);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.3s ease;
+    }
+
+    .difference-card:hover {
+      border-color: var(--si-terracotta);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(199, 93, 58, 0.1);
+    }
+
+    .difference-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--si-cream);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .difference-icon svg {
+      width: 28px;
+      height: 28px;
+      color: var(--si-terracotta);
+    }
+
+    .difference-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 18px;
+      color: var(--si-charcoal);
+      margin-bottom: 12px;
+    }
+
+    .difference-text {
+      font-size: 15px;
+      color: var(--si-warm-gray);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════════
+       COMPARISON SECTION
+    ═══════════════════════════════════════════ */
+    .comparison {
+      padding: 100px 32px;
+      background: var(--si-forest);
+    }
+
+    .comparison .section-label {
+      color: var(--si-gold);
+    }
+
+    .comparison .section-title {
+      color: var(--si-warm-white);
+    }
+
+    .comparison .section-subtitle {
+      color: rgba(255,255,255,0.6);
+    }
+
+    .comparison-table {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.05);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .comparison-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      background: rgba(0,0,0,0.2);
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .comparison-header-cell {
+      text-align: center;
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 14px;
+      color: var(--si-warm-white);
+    }
+
+    .comparison-header-cell:first-child {
+      text-align: left;
+      color: var(--si-gold);
+    }
+
+    .comparison-header-cell.si {
+      color: var(--si-gold);
+    }
+
+    .comparison-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      padding: 20px;
+      gap: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .comparison-row:last-child {
+      border-bottom: none;
+    }
+
+    .comparison-feature {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      font-weight: 500;
+    }
+
+    .comparison-cell {
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .comparison-cell.negative {
+      color: #e57373;
+    }
+
+    .comparison-cell.positive {
+      color: #81c784;
+    }
+
+    /* ═══════════════════════════════════════════
+       TRUST SECTION
+    ═══════════════════════════════════════════ */
+    .trust {
+      padding: 100px 32px;
+    }
+
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .trust-item {
+      text-align: center;
+      padding: 32px;
+    }
+
+    .trust-number {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 48px;
+      color: var(--si-terracotta);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .trust-label {
+      font-size: 15px;
+      color: var(--si-warm-gray);
+      font-weight: 500;
+    }
+
+    /* ═══════════════════════════════════════════
+       CTA SECTION
+    ═══════════════════════════════════════════ */
+    .cta-section {
+      padding: 100px 32px;
+      background: var(--si-charcoal);
+      text-align: center;
+    }
+
+    .cta-content {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .cta-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(28px, 4vw, 42px);
+      color: var(--si-warm-white);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .cta-subtitle {
+      font-size: 17px;
+      color: var(--si-warm-gray);
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .cta-section .btn-primary {
+      background: var(--si-gold);
+      color: var(--si-charcoal);
+    }
+
+    .cta-section .btn-primary:hover {
+      background: var(--si-gold-light);
+    }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    .footer {
+      background: var(--si-charcoal);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 48px 32px;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-logo svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .footer-logo-text {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 16px;
+      color: var(--si-warm-white);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+    }
+
+    .footer-link {
+      color: var(--si-warm-gray);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.2s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--si-warm-white);
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--si-warm-gray);
+    }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .nav {
+        padding: 12px 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 100px 20px 60px;
+      }
+
+      .hero-logo {
+        width: 90px;
+        height: 90px;
+      }
+
+      .manifesto, .difference, .comparison, .trust, .cta-section {
+        padding: 60px 20px;
+      }
+
+      .comparison-table {
+        font-size: 12px;
+      }
+
+      .comparison-header, .comparison-row {
+        grid-template-columns: 1.2fr 1fr 1fr;
+        padding: 12px;
+        gap: 8px;
+      }
+
+      .trust-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .trust-item {
+        padding: 20px;
+      }
+
+      .trust-number {
+        font-size: 36px;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 48 48" fill="none">
+        <path d="M24 4L6 12V24C6 34.5 13.5 43.5 24 46C34.5 43.5 42 34.5 42 24V12L24 4Z" fill="#C75D3A"/>
+        <path d="M24 10L12 16V24C12 31 17 37 24 39C31 37 36 31 36 24V16L24 10Z" fill="#F5F0E8"/>
+        <path d="M24 16C21.5 16 19.5 17 19.5 19C19.5 21 21 22 24 22.5C27 23 28.5 24 28.5 26C28.5 28 26.5 29 24 29" stroke="#2D4A3E" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="18" cy="26" r="2" fill="#D4A84B"/>
+        <circle cx="30" cy="20" r="2" fill="#D4A84B"/>
+        <circle cx="24" cy="33" r="2" fill="#D4A84B"/>
+      </svg>
+      <div class="nav-logo-text">
+        <span class="nav-brand">SI</span>
+        <span class="nav-tagline">The People's Intelligence</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#difference" class="nav-link">How It's Different</a>
+      <a href="#trust" class="nav-link">Trust & Transparency</a>
+      <a href="#" class="nav-link">Documentation</a>
+      <a href="#" class="nav-cta">Launch SI</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg-shape"></div>
+    <div class="hero-content">
+      <svg class="hero-logo" viewBox="0 0 120 120" fill="none">
+        <path d="M60 10L15 30V60C15 86.25 33.75 108.75 60 115C86.25 108.75 105 86.25 105 60V30L60 10Z" fill="#C75D3A"/>
+        <path d="M60 25L30 40V60C30 77.5 42.5 92.5 60 97.5C77.5 92.5 90 77.5 90 60V40L60 25Z" fill="#F5F0E8"/>
+        <path d="M60 40C52.5 40 47.5 43.75 47.5 50C47.5 56.25 52.5 60 60 61.25C67.5 62.5 72.5 66.25 72.5 72.5C72.5 78.75 67.5 82.5 60 82.5" stroke="#2D4A3E" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="42" cy="68" r="5" fill="#D4A84B"/>
+        <circle cx="78" cy="52" r="5" fill="#D4A84B"/>
+        <circle cx="60" cy="90" r="5" fill="#D4A84B"/>
+      </svg>
+      
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        <span class="hero-badge-text">Private by Design • No Data Harvesting</span>
+      </div>
+      
+      <h1 class="hero-title">
+        Intelligence that serves <span class="highlight">people</span> —<br>not corporations.
+      </h1>
+      
+      <p class="hero-subtitle">
+        SI is Safe Intelligence: open-source, local-first, and built without ads, data mining, or corporate training pipelines. Your conversations stay yours.
+      </p>
+      
+      <div class="hero-cta-group">
+        <a href="#" class="btn-primary">Use SI Now</a>
+        <a href="#difference" class="btn-secondary">See How It's Different</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Manifesto Section -->
+  <section class="manifesto">
+    <div class="manifesto-content">
+      <p class="manifesto-label">The SI Manifesto</p>
+      <p class="manifesto-text">
+        Your conversations are <span class="em">not harvested</span>.<br>
+        Your ideas are <span class="em">not resold</span>.<br>
+        Your intelligence is <span class="em">not shaped</span> by corporate incentives.
+      </p>
+      <p class="manifesto-subtext">
+        In an era of accelerating AI adoption, SI represents a safer path forward — intelligence that belongs to the people who use it, not the companies who monetize it.
+      </p>
+    </div>
+  </section>
+
+  <!-- Difference Section -->
+  <section class="difference" id="difference">
+    <div class="section-header">
+      <p class="section-label">How SI Is Different</p>
+      <h2 class="section-title">Built for privacy. Designed for people.</h2>
+      <p class="section-subtitle">
+        Unlike commercial AI platforms built around data harvesting and advertising, SI operates without mandatory connections to external corporate platforms.
+      </p>
+    </div>
+    
+    <div class="difference-grid">
+      <div class="difference-card">
+        <div class="difference-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+          </svg>
+        </div>
+        <h3 class="difference-title">No Advertising Model</h3>
+        <p class="difference-text">SI has no ads, no sponsored content, and no incentive to keep you engaged for profit. The product serves you, not advertisers.</p>
+      </div>
+      
+      <div class="difference-card">
+        <div class="difference-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <h3 class="difference-title">No Data Resale</h3>
+        <p class="difference-text">Your conversations, queries, and ideas are never packaged and sold to third parties. Your data is not a product.</p>
+      </div>
+      
+      <div class="difference-card">
+        <div class="difference-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+        <h3 class="difference-title">No Corporate Training</h3>
+        <p class="difference-text">Your interactions are not used to train corporate AI models. What you share with SI stays with SI.</p>
+      </div>
+      
+      <div class="difference-card">
+        <div class="difference-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <h3 class="difference-title">Open Source</h3>
+        <p class="difference-text">Built on inspectable, open-source components. You can verify exactly how SI handles your information.</p>
+      </div>
+      
+      <div class="difference-card">
+        <div class="difference-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <h3 class="difference-title">Local-First Architecture</h3>
+        <p class="difference-text">Designed to operate without mandatory external connections. Your intelligence runs under your control.</p>
+      </div>
+      
+      <div class="difference-card">
+        <div class="difference-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 3h18v18H3zM12 8v8m-4-4h8"/>
+          </svg>
+        </div>
+        <h3 class="difference-title">No Hidden Telemetry</h3>
+        <p class="difference-text">No background tracking, no behavioral profiling, no silent data collection. What you see is what you get.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Section -->
+  <section class="comparison">
+    <div class="section-header">
+      <p class="section-label">The Honest Comparison</p>
+      <h2 class="section-title">Stop sharing your most intimate conversations with Big Tech.</h2>
+      <p class="section-subtitle">
+        See how SI compares to commercial AI platforms on the things that actually matter.
+      </p>
+    </div>
+    
+    <div class="comparison-table">
+      <div class="comparison-header">
+        <div class="comparison-header-cell">Feature</div>
+        <div class="comparison-header-cell">Big Tech AI</div>
+        <div class="comparison-header-cell si">SI</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-feature">Data used for advertising</div>
+        <div class="comparison-cell negative">Yes</div>
+        <div class="comparison-cell positive">Never</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-feature">Conversations sold to third parties</div>
+        <div class="comparison-cell negative">Often</div>
+        <div class="comparison-cell positive">Never</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-feature">Used to train corporate models</div>
+        <div class="comparison-cell negative">Default</div>
+        <div class="comparison-cell positive">Never</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-feature">Hidden telemetry & tracking</div>
+        <div class="comparison-cell negative">Extensive</div>
+        <div class="comparison-cell positive">None</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-feature">Open source & inspectable</div>
+        <div class="comparison-cell negative">Closed</div>
+        <div class="comparison-cell positive">Fully open</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-feature">User-controlled memory</div>
+        <div class="comparison-cell negative">Limited</div>
+        <div class="comparison-cell positive">Full control</div>
+      </div>
+      <div class="comparison-row">
+        <div class="comparison-feature">Works without internet</div>
+        <div class="comparison-cell negative">No</div>
+        <div class="comparison-cell positive">Yes (local mode)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Section -->
+  <section class="trust" id="trust">
+    <div class="section-header">
+      <p class="section-label">Trust & Transparency</p>
+      <h2 class="section-title">Designed to prove we mean it.</h2>
+      <p class="section-subtitle">
+        SI isn't just different in marketing — it's different in architecture.
+      </p>
+    </div>
+    
+    <div class="trust-grid">
+      <div class="trust-item">
+        <div class="trust-number">0</div>
+        <div class="trust-label">External API calls by default</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-number">100%</div>
+        <div class="trust-label">Open source components</div>
+      </div>
+      <div class="trust-item">
+        <div class="trust-number">1-Click</div>
+        <div class="trust-label">Memory purge available</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2 class="cta-title">Use Intelligence Without Being Used.</h2>
+      <p class="cta-subtitle">
+        Join the movement for ethical, people-first AI. SI is free to use and supported by the community.
+      </p>
+      <a href="#" class="btn-primary">Launch SI Now</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <svg viewBox="0 0 48 48" fill="none">
+          <path d="M24 4L6 12V24C6 34.5 13.5 43.5 24 46C34.5 43.5 42 34.5 42 24V12L24 4Z" fill="#C75D3A"/>
+          <path d="M24 10L12 16V24C12 31 17 37 24 39C31 37 36 31 36 24V16L24 10Z" fill="#F5F0E8"/>
+          <path d="M24 16C21.5 16 19.5 17 19.5 19C19.5 21 21 22 24 22.5C27 23 28.5 24 28.5 26C28.5 28 26.5 29 24 29" stroke="#2D4A3E" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="18" cy="26" r="2" fill="#D4A84B"/>
+          <circle cx="30" cy="20" r="2" fill="#D4A84B"/>
+          <circle cx="24" cy="33" r="2" fill="#D4A84B"/>
+        </svg>
+        <span class="footer-logo-text">SI — The People's Intelligence</span>
+      </div>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Privacy Manifesto</a>
+        <a href="#" class="footer-link">Documentation</a>
+        <a href="#" class="footer-link">GitHub</a>
+        <a href="#" class="footer-link">Support SI</a>
+      </div>
+      <p class="footer-copy">© 2025 SI Project. Open source. People first.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
